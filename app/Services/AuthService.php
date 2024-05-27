@@ -52,4 +52,18 @@ class AuthService
     {
         return Auth::user();
     }
+
+    public static function register($data){
+        try {
+            //code...
+            $user = new User();
+            $user->name = $data['username'];
+            $user->email = $data['email'];
+            $user->password = bcrypt($data['password']);
+            $user->save();
+            return $user;
+        } catch (\Throwable $th) {
+            return $th->getMessage();
+        }
+    }
 }

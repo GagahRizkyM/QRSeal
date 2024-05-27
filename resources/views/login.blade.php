@@ -37,7 +37,7 @@
             </div>
           </div>
 
-          <form action="{{url('/auth')}}" method="POST">
+          <form action="{{route('auth')}}" method="post">
             @csrf
             <div class="row gy-3 gy-md-4 overflow-hidden">
               <div class="col-12">
@@ -52,7 +52,7 @@
               <div class="col-12">
                 <div class="d-grid">
                   <button class="btn bsb-btn-xl btn-primary" >Login</button>
-                  <p class="text-center">Belum punya akun?<a href="#">Register</a></p>
+                  <p class="text-center">Belum punya akun?<a href="{{route('register')}}">Register</a></p>
                 </div>
               </div>
             </div>
@@ -67,5 +67,25 @@
 
 
      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+     <script>
+      document.addEventListener("DOMContentLoaded", function() {
+            @if (session('error'))
+                Swal.fire({
+                    title: "Error!",
+                    text: "{{session('error')}}",
+                    icon: "error"
+                });
+            @endif
+            @if (session('success'))
+                Swal.fire({
+                    title: "Sukses!",
+                    text: "{{session('success')}}",
+                    icon: "success"
+                });
+            @endif
+
+        });
+     </script>
   </body>
 </html>

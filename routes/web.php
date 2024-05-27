@@ -18,13 +18,14 @@ use App\Http\Controllers\FillPDFController;
 
 // Route::middleware(['logged'])->group(function () {
 // });
-Route::get('/login', [AuthController::class, 'login'])->name('login');
-Route::post('/auth', [AuthController::class, 'auth']);
+Route::get('/', [AuthController::class, 'login'])->name('login');
+Route::post('/auth', [AuthController::class, 'auth'])->name('auth');
 
 Route::get('/register', function () {
     return view('register');
-});
+})->name('register');
 
+Route::post('/register', [AuthController::class, 'register'])->name('post-register');
 
 
 // Route::get('/upload', function () {

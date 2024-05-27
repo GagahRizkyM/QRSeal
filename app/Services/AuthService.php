@@ -59,6 +59,7 @@ class AuthService
             $user = new User();
             $user->name = $data['username'];
             $user->email = $data['email'];
+            $user->role = $data['role'];
             $user->password = bcrypt($data['password']);
             $user->save();
             return $user;

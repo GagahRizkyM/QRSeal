@@ -64,6 +64,7 @@
                                         value="" placeholder="Masukkan Password" required>
 
                                 </div>
+                                <input type="hidden" name="role" id="role" value="user">
                                 <div class="col-12">
                                     <div class="d-grid">
                                         <button class="btn bsb-btn-xl btn-primary" type="submit">Register</button>

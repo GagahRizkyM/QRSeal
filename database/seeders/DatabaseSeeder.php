@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
         // ]);
 
         $this->call([
-            create_qrcode::class,
+            // create_qrcode::class,
             users::class,
         ]);
     }

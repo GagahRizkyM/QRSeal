@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FillPDFController;
+use App\Http\Controllers\GenerateQRController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +32,9 @@ Route::post('/register', [AuthController::class, 'register'])->name('post-regist
 // Route::get('/upload', function () {
 //     return view('upload');
 // });
+
+Route::get('/generate-qr', [GenerateQRController::class, 'index'])->name('generate-qr');
+Route::post('/store-generate-qr', [GenerateQRController::class, 'store'])->name('store.generate.qr');
 
 Route::post('/process_certificate', [FillPDFController::class, 'process'])->name('process_certificate');
 Route::get('/create_certificate', [FillPDFController::class, 'create'])->name('create_certificate');

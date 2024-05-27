@@ -13,7 +13,7 @@
         <h5 class="card-title">Generate QR CODE</h5>
         <img src="{{ asset('/img/Generate.png')}}" class="card-img-top img fluid" alt="Generate Qr-code" >
         <div class="card-body">
-        <a href="#" class="btn btn-primary" style="width: 70%">Upload</a>
+        <a href="{{route('generate-qr')}}" class="btn btn-primary" style="width: 70%">Upload</a>
         </div>
       </div>
      </div>

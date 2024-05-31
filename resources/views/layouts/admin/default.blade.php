@@ -30,6 +30,7 @@
     <link rel="stylesheet" href="{{ asset('/vendor/AdminLTE-3.2.0/plugins/daterangepicker/daterangepicker.css') }}">
     <!-- summernote -->
     <link rel="stylesheet" href="{{ asset('/vendor/AdminLTE-3.2.0/plugins/summernote/summernote-bs4.min.css') }}">
+    <link rel="shortcut icon" href="{{asset('/img/icon.svg')}}" type="image/x-icon">
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">

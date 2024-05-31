@@ -5,6 +5,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FillPDFController;
 use App\Http\Controllers\GenerateQRController;
+use App\Http\Controllers\RsaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,9 +30,9 @@ Route::get('/register', function () {
 Route::post('/register', [AuthController::class, 'register'])->name('post-register');
 
 
-// Route::get('/upload', function () {
-//     return view('upload');
-// });
+Route::get('/upload', function () {
+    return view('tervalidasi');
+});
 
 Route::get('/generate-qr', [GenerateQRController::class, 'index'])->name('generate-qr');
 Route::post('/store-generate-qr', [GenerateQRController::class, 'store'])->name('store.generate.qr');
@@ -49,4 +50,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/home', function () {
         return view('home');
     })->name('home');
+
 });
+Route::get('/encrypt', [RsaController::class, 'encrypt']);
+Route::get('/decrypt', [RsaController::class, 'decrypt']);
+Route::get('/test-encryption', [RsaController::class, 'testEncryptionDecryption']);
+Route::get('test', fn () => phpinfo());

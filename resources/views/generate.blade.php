@@ -40,7 +40,7 @@
                             <p class="fs-6 py-2">Support PDF</p>
                             <p class="fs-6">Ukuran Maksimal : 100 MB</p>
                         </div>
-                        <input type="file" id="fileInput" style="display:none">
+                        <input type="file" id="fileInput" style="display:none" accept=".pdf">
                     </div>
                 </div>
             </div>
@@ -61,39 +61,42 @@
                             @csrf
 
                             <div class="row mb-3">
-                                <label for="serficate_number" class="col-sm-2 col-form-label">No. Sertifikat</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" name="serficate_number"
-                                        id="serficate_number">
+                                <label for="serficate_number" class="col-md-2 col-form-label">No. Sertifikat</label>
+                                <div class="col-md-10">
+                                    <input type="text" class="form-control" name="serficate_number" id="serficate_number"
+                                        placeholder="13/X/2024">
                                 </div>
                             </div>
 
                             <div class="row mb-3">
-                                <label for="name" class="col-sm-2 col-form-label">Nama Peserta</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" name="name" id="name" accept=".pdf">
+                                <label for="name" class="col-md-2 col-form-label">Nama Peserta</label>
+                                <div class="col-md-10">
+                                    <input type="text" class="form-control" name="name" id="name"
+                                        placeholder="Gagah Perkasa" title="Masukkan Nama Lengkap">
                                 </div>
                             </div>
 
                             <div class="row mb-3">
-                                <label for="jenis_pelatian" class="col-sm-2 col-form-label">Jenis Pelatihan</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" name="jenis_pelatian" id="jenis_pelatian">
+                                <label for="jenis_pelatian" class="col-md-2 col-form-label">Jenis Pelatihan</label>
+                                <div class="col-md-10">
+                                    <input type="text" class="form-control" name="jenis_pelatian" id="jenis_pelatian"
+                                        placeholder="Pelatihan cocok tanam">
                                 </div>
                             </div>
 
                             <div class="row mb-3">
-                                <label for="date_terbit" class="col-sm-2 col-form-label">Tanggal Terbit</label>
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" name="date_terbit" id="date_terbit">
+                                <label for="date_terbit" class="col-md-2 col-form-label">Tanggal Terbit</label>
+                                <div class="col-md-10">
+                                    <input type="text" class="form-control datepicker" name="date_terbit"
+                                        id="date_terbit">
                                 </div>
                             </div>
 
                             <div class="row mb-3">
-                                <label for="name_penandatangan" class="col-sm-2 col-form-label">Penandatangan</label>
-                                <div class="col-sm-10">
+                                <label for="name_penandatangan" class="col-md-2 col-form-label">Penandatangan</label>
+                                <div class="col-md-10">
                                     <input type="text" class="form-control" name="name_penandatangan"
-                                        id="name_penandatangan">
+                                        id="name_penandatangan" placeholder="" title="Nama yang Menandatangani">
                                 </div>
                             </div>
 
@@ -101,8 +104,8 @@
                                 <label for="digital_code" class="form-label">Tanda Tangan Digital</label>
                                 <div class="row">
                                     <div class="col-md-10">
-                                        <input type="text" class="form-control" name="digital_code" id="digital_code"
-                                            placeholder="Generate Code" readonly value="">
+                                        <input type="text" class="form-control disabled" name="digital_code"
+                                            id="digital_code" placeholder="Kode otomatis generate" readonly value="">
                                     </div>
                                     <div class="col-md-2">
                                         <div class="d-grid gap-2">
@@ -137,6 +140,12 @@
 
 
     <script>
+        $(document).ready(function() {
+            $('.datepicker').datepicker({
+                format: 'yyyy-mm-dd',
+                uiLibrary: 'bootstrap5'
+            });
+        })
         const dropzone = document.getElementById('dropzone');
         const fileInput = document.getElementById('fileInput');
         const file_name = document.getElementById('file_name')
@@ -205,18 +214,49 @@
                 });
         }
 
-        function generateRandom() {
-            let result = '';
-            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-            const charactersLength = characters.length;
-            let counter = 0;
-            while (counter < 100) {
-                result += characters.charAt(Math.floor(Math.random() * charactersLength));
-                counter += 1;
+        async function generateRandom() {
+            // let result = '';
+            // const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            // const charactersLength = characters.length;
+            // let counter = 0;
+            // while (counter < 100) {
+            //     result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            //     counter += 1;
+            // }
+
+            const serficate_number = document.getElementById('serficate_number').value;
+            const name = document.getElementById('name').value;
+            const jenis_pelatian = document.getElementById('jenis_pelatian').value;
+            const date_terbit = document.getElementById('date_terbit').value;
+            const name_penandatangan = document.getElementById('name_penandatangan').value;
+            let data = {
+                data: `${serficate_number}|${name}|${jenis_pelatian}|${date_terbit}|${name_penandatangan}`,
             }
+            console.log(data);
+            const baseUrl = "{{ url('/') }}"
+
+            const response = await fetch(`${baseUrl}/api/encrypt`, {
+                method: "POST", // or 'PUT'
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(data),
+            })
+            const result = await response.json();
+            console.log(result);
+
+            const responseDecryp = await fetch(`${baseUrl}/api/decrypt`, {
+                method: "POST", // or 'PUT'
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({data1: result.encrypted, data2: result.encryptedRsa}),
+            })
+            const decryp = await responseDecryp.json();
+            console.log(decryp);
 
             const digital_code = document.getElementById('digital_code');
-            digital_code.value = result;
+            digital_code.value = result.encrypted;
         }
     </script>
 @endsection

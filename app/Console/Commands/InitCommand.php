@@ -42,6 +42,7 @@ class InitCommand extends Command
         $this->call('view:clear');
         $this->call('optimize:clear');
         $this->call('route:clear');
+        $this->call('route:cache');
         $this->call('event:clear');
         $this->call('storage:link');
 

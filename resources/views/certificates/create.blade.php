@@ -6,6 +6,6 @@
 </head>
 <body>
     <h1>QR Code Sertifikat</h1>
-    <img src="{{ $qrCodePath }}" alt="QR Code">
+    <img src="{{ asset() }}" alt="QR Code">
 </body>
 </html>

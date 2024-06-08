@@ -36,11 +36,11 @@ Route::get('/upload', function () {
     return view('tervalidasi');
 });
 
-Route::get('/generate-qr', [GenerateQRController::class, 'index'])->name('generate-qr');
+
 Route::post('/store-generate-qr', [GenerateQRController::class, 'store'])->name('store.generate.qr');
 
 Route::post('/process_certificate', [FillPDFController::class, 'process'])->name('process_certificate');
-Route::post('/proses-qr', [GenerateQRController::class, 'create'])->name('proses-qr');
+
 Route::get('/create_certificate', [FillPDFController::class, 'create'])->name('create_certificate');
 Route::get('/document', function () {
     return view('document');
@@ -53,6 +53,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/home', function () {
         return view('home');
     })->name('home');
+    Route::get('/generate-qr', [GenerateQRController::class, 'index'])->name('generate-qr');
+    Route::post('/proses-qr', [GenerateQRController::class, 'create'])->name('proses-qr');
+    Route::get('/preview/{id}', [PreviewController::class, 'index'])->name('preview');
 
 });
 Route::get('/encrypt', [RsaController::class, 'encrypt']);
@@ -60,4 +63,4 @@ Route::get('/decrypt', [RsaController::class, 'decrypt']);
 Route::get('/scan', [ScanController::class, 'scan'])->name('scan');
 Route::get('/test-encryption', [RsaController::class, 'testEncryptionDecryption']);
 Route::get('test', fn () => phpinfo());
-Route::get('/preview', [PreviewController::class, 'index'])->name('preview');
+

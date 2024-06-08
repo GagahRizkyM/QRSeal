@@ -2,12 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\GenareteQRFile;
 use Illuminate\Http\Request;
 
 class PreviewController extends Controller
 {
-     public function index()
+     public function index(Request $request, $id)
     {
-        return view('preview');
+        $filesQR = GenareteQRFile::where('generate_qr_id', $id)->where('type', 'qr')->first();
+        $filesSertif = GenareteQRFile::where('generate_qr_id', $id)->where('type', 'file')->first();
+        // return dd($filesQR);
+        $data = [
+            'rsa' => $request->get('rsa'),
+            'qr_code'=> $filesQR->path,
+            'file'=> $filesSertif->path
+        ];
+        return view('preview', $data);
     }
 }

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('path')->nullable();
             $table->float('size')->nullable();
             $table->string('ext')->nullable();
+            $table->string('type')->nullable();
             $table->unsignedInteger('created_by')->nullable();
             $table->unsignedInteger('updated_by')->nullable();
             $table->timestamps();

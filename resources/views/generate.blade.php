@@ -40,7 +40,7 @@
                             <p class="fs-6 py-2">Support PDF</p>
                             <p class="fs-6">Ukuran Maksimal : 100 MB</p>
                         </div>
-                        <input type="file" id="fileInput" style="display:none" accept=".pdf">
+                        
                     </div>
                 </div>
             </div>
@@ -59,7 +59,7 @@
                         <div class="card-body">
                             <p class="text-start">Berikan Info Sertifikat Anda</p>
                             @csrf
-
+                            <input type="file" id="fileInput" name="fileInput" style="display:none" accept=".pdf">
                             <div class="row mb-3">
                                 <label for="serficate_number" class="col-md-2 col-form-label">No. Sertifikat</label>
                                 <div class="col-md-10">
@@ -137,6 +137,27 @@
             </form>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+     <script>
+      document.addEventListener("DOMContentLoaded", function() {
+            @if (session('error'))
+                Swal.fire({
+                    title: "Error!",
+                    text: "{{session('error')}}",
+                    icon: "error"
+                });
+            @endif
+            @if (session('success'))
+                Swal.fire({
+                    title: "Sukses!",
+                    text: "{{session('success')}}",
+                    icon: "success"
+                });
+            @endif
+
+        });
+     </script>
 
 
     <script>

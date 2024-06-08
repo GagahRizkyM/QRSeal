@@ -23,7 +23,12 @@ class StoreGenerateQRRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'serficate_number' => 'required',
+            'name' => 'required',
+            'jenis_pelatian' => 'required',
+            'date_terbit' => 'required',
+            'name_penandatangan' => 'required',
+            'digital_code' => 'required',
         ];
     }
 }

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('jenis_pelatian');
             $table->timestamp('date_terbit')->nullable();
             $table->string('name_penandatangan');
-            $table->string('digital_code');
+            $table->text('digital_code');
             $table->timestamps();
         });
     }

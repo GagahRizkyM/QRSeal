@@ -49,7 +49,7 @@
 
     <div class="container">
         <div class="row ">
-            <form id="certificateForm" method="POST" action="{{ route('process_certificate') }}"
+            <form id="certificateForm" method="POST" action="{{ route('proses-qr') }}"
                 enctype="multipart/form-data">
                 <div class="col-xl-12">
                     <div class="card mb-4" style="border-radius: 10px;">
@@ -130,9 +130,8 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-end mb-5">
-                        <a href="{{route('preview')}}" button class="btn btn-primary" style="background-color: #40A2D8;" type="submit">Generate
-                            QR-CODE button </a>
-
+                        <button type="submit">Generate
+                            QR-CODE button </button>
                     </div>
                 </div>
             </form>

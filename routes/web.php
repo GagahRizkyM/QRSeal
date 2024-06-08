@@ -40,6 +40,7 @@ Route::get('/generate-qr', [GenerateQRController::class, 'index'])->name('genera
 Route::post('/store-generate-qr', [GenerateQRController::class, 'store'])->name('store.generate.qr');
 
 Route::post('/process_certificate', [FillPDFController::class, 'process'])->name('process_certificate');
+Route::post('/proses-qr', [GenerateQRController::class, 'create'])->name('proses-qr');
 Route::get('/create_certificate', [FillPDFController::class, 'create'])->name('create_certificate');
 Route::get('/document', function () {
     return view('document');

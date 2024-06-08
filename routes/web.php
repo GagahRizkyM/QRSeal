@@ -56,11 +56,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/generate-qr', [GenerateQRController::class, 'index'])->name('generate-qr');
     Route::post('/proses-qr', [GenerateQRController::class, 'create'])->name('proses-qr');
     Route::get('/preview/{id}', [PreviewController::class, 'index'])->name('preview');
-
 });
 Route::get('/encrypt', [RsaController::class, 'encrypt']);
 Route::get('/decrypt', [RsaController::class, 'decrypt']);
 Route::get('/scan', [ScanController::class, 'scan'])->name('scan');
 Route::get('/test-encryption', [RsaController::class, 'testEncryptionDecryption']);
 Route::get('test', fn () => phpinfo());
-
+Route::get('/preview/{id}', [PreviewController::class, 'index'])->name('preview');

@@ -130,8 +130,9 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-end mb-5">
-                        <button class="btn btn-primary" style="background-color: #40A2D8;" type="submit">Generate
-                            QR-CODE</button>
+                        <a href="{{route('preview')}}" button class="btn btn-primary" style="background-color: #40A2D8;" type="submit">Generate
+                            QR-CODE button </a>
+
                     </div>
                 </div>
             </form>

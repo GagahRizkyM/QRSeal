@@ -25,7 +25,7 @@
           <h5 class="card-title">Validasi File</h5>
           <img src="{{ asset('/img/validasi.png')}}" class="card-img-top" alt="...">
           <div class="card-body">
-          <a href="#" class="btn btn-primary" style="width: 70% ">Upload</a>
+          <a href="{{route('scan')}}" class="btn btn-primary" style="width: 70% ">Upload</a>
           </div>
         </div>
       </div>

@@ -6,6 +6,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FillPDFController;
 use App\Http\Controllers\GenerateQRController;
 use App\Http\Controllers\RsaController;
+use App\Http\Controllers\ScanController;
+use App\Http\Controllers\PreviewController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,5 +56,7 @@ Route::middleware(['auth'])->group(function () {
 });
 Route::get('/encrypt', [RsaController::class, 'encrypt']);
 Route::get('/decrypt', [RsaController::class, 'decrypt']);
+Route::get('/scan', [ScanController::class, 'scan'])->name('scan');
 Route::get('/test-encryption', [RsaController::class, 'testEncryptionDecryption']);
 Route::get('test', fn () => phpinfo());
+Route::get('/preview', [PreviewController::class, 'index'])->name('preview');

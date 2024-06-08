@@ -83,7 +83,8 @@ class GenerateQRController extends Controller
             // Konversi data ke format JSON
 
             // Buat QR code
-            $qrCode = new QrCode($data['digital_code']);
+            $isiQQR = url('preview/' . $model->id . '?rsa=' . $model->digital_code);
+            $qrCode = new QrCode($isiQQR);
             $qrCode->setSize(200);
             $qrCode->setMargin(5);
             $qrCode->setEncoding(new Encoding('UTF-8'));

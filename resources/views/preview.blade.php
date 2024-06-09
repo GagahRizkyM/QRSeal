@@ -1,25 +1,33 @@
 @extends('layouts.user.default')
+
 @section('content')
-    <div class="container">
-        <div class="row">
-            <div class="text-center">
-                <h1> Preview </h1>
+    <div class="container-fluid" style="height: 100vh;">
+        <div class="row h-100">
+            <!-- PDF Preview Section -->
+            <div class="col-md-8 d-flex align-items-center justify-content-center position-relative" id="pdfPreview" style="border-right: 1px solid #ccc;">
+                <embed src="{{ asset('storage/' . $file) }}" type="application/pdf" style="width: 100%; height: 100%; border: none;" />
+
+                <!-- QR Code positioned absolutely within the preview area -->
+                <img src="{{ asset('storage/' . $qr_code) }}" id="qrCode" alt="QR code" style="width: 10%; height: auto; position: absolute; top: 10px; left: 10px; display: none;">
             </div>
-            <div class="col-md-8" id="pdfPreview">
-                <object class="pdf" data=
-              "{{ asset('storage/' . $file) }}" width="800" height="500">
-                </object>
-            </div>
-            <div class="col-md-4">
-                <img src="{{ asset('storage/' . $qr_code) }}" id="qrCode" alt="QR code" style="width: 100%;"
-                    draggable="true">
-                <button class="btn btn-primary" id="saveQRCode" style="background-color: #40A2D8;" type="submit">Proses</button>
+
+            <!-- QR Code and Download Section -->
+            <div class="col-md-4 d-flex flex-column align-items-center justify-content-center">
+                <img src="{{ asset('storage/' . $qr_code) }}" id="initialQrCode" alt="QR code" style="width: 50%; height: auto;" draggable="true">
+
+                <!-- Download Button -->
+                <button class="btn btn-primary mt-4" id="downloadPDF" style="background-color: #40A2D8;">
+                    Download PDF with QR Code
+                </button>
+
+                <!-- Save QR Code Button -->
+                <button class="btn btn-secondary mt-2" id="saveQRCode" type="button">Save QR Code to PDF</button>
             </div>
         </div>
     </div>
 
-
-
+    <!-- Include the pdf-lib library -->
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
     <script type="module">
         import 'https://cdn.interactjs.io/v1.9.20/auto-start/index.js'
         import 'https://cdn.interactjs.io/v1.9.20/actions/drag/index.js'
@@ -28,52 +36,133 @@
         import 'https://cdn.interactjs.io/v1.9.20/dev-tools/index.js'
         import interact from 'https://cdn.interactjs.io/v1.9.20/interactjs/index.js'
 
+        // Global variable to store QR code position
+        let qrCodePosition = { x: 0, y: 0 };
 
-        interact('#qrCode')
+        // Initial draggable QR code
+        interact('#initialQrCode')
             .draggable({
-                onmove: dragMoveListener,
-            });
+                onstart: function(event) {
+                    // Show and move QR code to preview area when drag starts
+                    var initialQrCode = event.target;
+                    var qrCodeInPreview = document.getElementById('qrCode');
 
-        interact('#pdfPreview')
-            .dropzone({
-                accept: '#qrCode',
-                ondrop: function(event) {
-                    var clone = event.relatedTarget.cloneNode(true);
-                    clone.removeAttribute("id");
-                    clone.removeAttribute("draggable");
-                    event.currentTarget.appendChild(clone);
+                    // Position QR code in preview where the drag started
+                    qrCodeInPreview.style.top = (event.pageY - initialQrCode.height / 2) + 'px';
+                    qrCodeInPreview.style.left = (event.pageX - initialQrCode.width / 2) + 'px';
+                    qrCodeInPreview.style.display = 'block';
+
+                    // Save the position of the QR code
+                    qrCodePosition.x = event.pageX - initialQrCode.width / 2;
+                    qrCodePosition.y = event.pageY - initialQrCode.height / 2;
+
+                    // Remove the initial QR code from its original place
+                    initialQrCode.style.display = 'none';
+                },
+                onmove: dragMoveListener,
+                onend: function(event) {
+                    // Hide the initial QR code after dragging ends
+                    event.target.style.display = 'none';
                 }
             });
 
+        // Make the QR code in the preview draggable as well
+        interact('#qrCode')
+            .draggable({
+                onmove: dragMoveListener
+            });
+
+        // Function to update QR code position during drag
+        function dragMoveListener(event) {
+            var target = event.target,
+                x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
+                y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+
+            // Update the position of the QR code
+            target.style.webkitTransform =
+                target.style.transform =
+                'translate(' + x + 'px, ' + y + 'px)';
+
+            // Save the new position for next drag move
+            target.setAttribute('data-x', x);
+            target.setAttribute('data-y', y);
+
+            // Update the global QR code position
+            qrCodePosition.x = event.pageX - target.width / 2;
+            qrCodePosition.y = event.pageY - target.height / 2;
+        }
+
+        // Assign the dragMoveListener to the window for reuse
+        window.dragMoveListener = dragMoveListener;
+
+        // Download PDF button functionality
+        document.getElementById('downloadPDF').addEventListener('click', async function() {
+            // Get the QR code element and its position
+            var qrCode = document.getElementById('qrCode');
+            var pdfPreview = document.getElementById('pdfPreview');
+
+            if (qrCode && pdfPreview) {
+                // Get the position of the QR code
+                var qrX = qrCodePosition.x;
+                var qrY = qrCodePosition.y;
+
+                // Calculate the position and size in the PDF (based on your layout and scaling)
+                var pdfWidth = pdfPreview.clientWidth;
+                var pdfHeight = pdfPreview.clientHeight;
+                var qrWidth = qrCode.clientWidth;
+                var qrHeight = qrCode.clientHeight;
+
+                // Ensure the aspect ratio is preserved
+                var scaleFactor = qrWidth / qrCode.naturalWidth;
+
+                var qrPosX = qrX / pdfWidth;
+                var qrPosY = (pdfHeight - (qrY + qrHeight)) / pdfHeight;
+
+                // Load the PDF and add the QR code
+                const existingPdfBytes = await fetch("{{ asset('storage/' . $file) }}").then(res => res.arrayBuffer());
+                const qrCodeImageBytes = await fetch(qrCode.src).then(res => res.arrayBuffer());
+
+                const pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
+                const qrCodeImage = await pdfDoc.embedPng(qrCodeImageBytes);
+                const pages = pdfDoc.getPages();
+                const firstPage = pages[0];
+
+                // Calculate the dimensions of the QR code in the PDF's coordinate system
+                const qrCodePdfWidth = firstPage.getWidth() * (qrWidth / pdfWidth);
+                const qrCodePdfHeight = qrCodePdfWidth * (qrHeight / qrWidth); // Maintain aspect ratio
+
+                // Add the QR code to the PDF at the specified position
+                firstPage.drawImage(qrCodeImage, {
+                    x: firstPage.getWidth() * qrPosX,
+                    y: firstPage.getHeight() * qrPosY,
+                    width: qrCodePdfWidth,
+                    height: qrCodePdfHeight,
+                });
+
+                // Serialize the PDF to bytes and
+                // Serialize the PDF to bytes and download
+                const pdfBytes = await pdfDoc.save();
+                const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                const url = URL.createObjectURL(blob);
+
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'downloaded-with-qr-code.pdf';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+        });
+
+        // Save QR Code to PDF preview
         document.getElementById('saveQRCode').addEventListener('click', function() {
             var qrCode = document.getElementById('qrCode');
             var pdfPreview = document.getElementById('pdfPreview');
 
             if (qrCode && pdfPreview) {
-                var clone = qrCode.cloneNode(true);
-                clone.removeAttribute("id");
-                clone.removeAttribute("draggable");
-                pdfPreview.appendChild(clone);
+                qrCode.style.display = 'block';
             }
         });
-
-        function dragMoveListener(event) {
-            var target = event.target,
-                // keep the dragged position in the data-x/data-y attributes
-                x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
-                y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
-
-            // translate the element
-            target.style.webkitTransform =
-                target.style.transform =
-                'translate(' + x + 'px, ' + y + 'px)';
-
-            // update the posiion attributes
-            target.setAttribute('data-x', x);
-            target.setAttribute('data-y', y);
-        }
-
-        // this is used later in the resizing and gesture demos
-        window.dragMoveListener = dragMoveListener;
     </script>
 @endsection

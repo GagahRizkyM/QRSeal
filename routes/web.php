@@ -59,7 +59,9 @@ Route::middleware(['auth'])->group(function () {
 });
 Route::get('/encrypt', [RsaController::class, 'encrypt']);
 Route::get('/decrypt', [RsaController::class, 'decrypt']);
+
 Route::get('/scan', [ScanController::class, 'scan'])->name('scan');
+Route::post('/check-barcode', [PreviewController::class, 'checkBarcode']);
 Route::get('/test-encryption', [RsaController::class, 'testEncryptionDecryption']);
 Route::get('test', fn () => phpinfo());
 Route::get('/preview/{id}', [PreviewController::class, 'index'])->name('preview');

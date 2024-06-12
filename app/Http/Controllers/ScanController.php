@@ -10,4 +10,17 @@ class ScanController extends Controller
     {
         return view('scan');
     }
+
+    public function checkBarcode(Request $request)
+    {
+        $barcode = $request->input('barcode');
+        $generate_qr_id = $request->input('generate_qr_id');
+
+        $exists = GenerateQRFile::where('name', $barcode)
+                                 ->where('generate_qr_id', $generate_qr_id)
+                                   ->exists();
+
+        return response()->json(['exists' => $exists]);
+    }
+
 }

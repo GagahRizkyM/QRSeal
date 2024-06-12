@@ -43,11 +43,11 @@
             <div class="row gy-3 gy-md-4 overflow-hidden">
               <div class="col-12">
                 <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
-                <input type="email" class="form-control" name="email" id="email" placeholder="name@example.com" required>
+                <input type="email" class="form-control" name="email" id="email" placeholder="name@example.com" autocomplete="off" required>
               </div>
               <div class="col-12">
                 <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
-                <input type="password" class="form-control" name="password" id="password" value="" required>
+                <input type="password" class="form-control" name="password" id="password" value="" required  autocomplete="off" >
                 <p class="text-end"><a href="#">Lupa Password?</a></p>
               </div>
               <div class="col-12">

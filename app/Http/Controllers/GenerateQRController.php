@@ -111,8 +111,10 @@ class GenerateQRController extends Controller
             $qrFileQR = new GenareteQRFile();
             $qrFileQR->generate_qr_id = $model->id;
             $qrFileQR->name = $nameQR;
+            // $qrFileQR->path = 'app  /public/' . $model->id . '/' . $nameQR; // Path relative to the storage/public
             $qrFileQR->path = 'sertifikat/' . $model->id . '/' . $nameQR; // Path relative to the storage/public
             $qrFileQR->type = 'qr';
+
             $qrFileQR->save();
 
             DB::commit();
@@ -136,8 +138,9 @@ class GenerateQRController extends Controller
     {
         if ($request->hasFile('file')) {
             $file = $request->file('file');
-            // $path = $file->store('uploads', 'public');
-            $path = 'oke path';
+            $path = $file->store('uploads', 'public');
+            // $path = 'oke path';
+            // dd($path);
             return response()->json(['path' => $path], 200);
         }
 

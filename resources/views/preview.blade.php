@@ -13,7 +13,7 @@
 
             <!-- QR Code and Download Section -->
             <div class="col-md-4 d-flex flex-column align-items-center justify-content-center">
-                <img src="{{ asset('storage/' . $qr_code) }}" id="initialQrCode" alt="QR code" style="width: 50%; height: auto;" draggable="true">
+                <img src="{{ asset('storage/' . $qr_code) }}" id="initialQrCode" alt="QR code" style="width: 100%; height: auto;" draggable="true">
 
                 <!-- Download Button -->
                 <button class="btn btn-primary mt-4" id="downloadPDF" style="background-color: #40A2D8;">
@@ -95,65 +95,65 @@
         // Assign the dragMoveListener to the window for reuse
         window.dragMoveListener = dragMoveListener;
 
-        // Download PDF button functionality
-        document.getElementById('downloadPDF').addEventListener('click', async function() {
-            // Get the QR code element and its position
-            var qrCode = document.getElementById('qrCode');
-            var pdfPreview = document.getElementById('pdfPreview');
+         // Download PDF button functionality
+    document.getElementById('downloadPDF').addEventListener('click', async function () {
+        // Get the QR code element and its position
+        var qrCode = document.getElementById('qrCode');
+        var pdfPreview = document.getElementById('pdfPreview');
 
-            if (qrCode && pdfPreview) {
-                // Get the position of the QR code
-                var qrX = qrCodePosition.x;
-                var qrY = qrCodePosition.y;
+        if (qrCode && pdfPreview) {
+            // Get the position of the QR code
+            var qrX = qrCodePosition.x;
+            var qrY = qrCodePosition.y;
 
-                // Calculate the position and size in the PDF (based on your layout and scaling)
-                var pdfWidth = pdfPreview.clientWidth;
-                var pdfHeight = pdfPreview.clientHeight;
-                var qrWidth = qrCode.clientWidth;
-                var qrHeight = qrCode.clientHeight;
+            // Calculate the position and size in the PDF (based on your layout and scaling)
+            var pdfWidth = pdfPreview.clientWidth;
+            var pdfHeight = pdfPreview.clientHeight;
+            var qrWidth = qrCode.clientWidth;
+            var qrHeight = qrCode.clientHeight;
 
-                // Ensure the aspect ratio is preserved
-                var scaleFactor = qrWidth / qrCode.naturalWidth;
+            // Calculate the scale factor based on QR code dimensions in the PDF
+            var scaleFactor = qrWidth / qrCode.naturalWidth;
 
-                var qrPosX = qrX / pdfWidth;
-                var qrPosY = (pdfHeight - (qrY + qrHeight)) / pdfHeight;
+            // Calculate the position of the QR code in the PDF
+            var qrPosX = qrX / pdfWidth;
+            var qrPosY = (pdfHeight - (qrY + qrHeight)) / pdfHeight;
 
-                // Load the PDF and add the QR code
-                const existingPdfBytes = await fetch("{{ asset('storage/' . $file) }}").then(res => res.arrayBuffer());
-                const qrCodeImageBytes = await fetch(qrCode.src).then(res => res.arrayBuffer());
+            // Load the PDF and add the QR code
+            const existingPdfBytes = await fetch("{{ asset('storage/' . $file) }}").then(res => res.arrayBuffer());
+            const qrCodeImageBytes = await fetch(qrCode.src).then(res => res.arrayBuffer());
 
-                const pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
-                const qrCodeImage = await pdfDoc.embedPng(qrCodeImageBytes);
-                const pages = pdfDoc.getPages();
-                const firstPage = pages[0];
+            const pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
+            const qrCodeImage = await pdfDoc.embedPng(qrCodeImageBytes);
+            const pages = pdfDoc.getPages();
+            const firstPage = pages[0];
 
-                // Calculate the dimensions of the QR code in the PDF's coordinate system
-                const qrCodePdfWidth = firstPage.getWidth() * (qrWidth / pdfWidth);
-                const qrCodePdfHeight = qrCodePdfWidth * (qrHeight / qrWidth); // Maintain aspect ratio
+            // Calculate the dimensions of the QR code in the PDF's coordinate system
+            const qrCodePdfWidth = qrCode.naturalWidth * scaleFactor;
+            const qrCodePdfHeight = qrCode.naturalHeight * scaleFactor;
 
-                // Add the QR code to the PDF at the specified position
-                firstPage.drawImage(qrCodeImage, {
-                    x: firstPage.getWidth() * qrPosX,
-                    y: firstPage.getHeight() * qrPosY,
-                    width: qrCodePdfWidth,
-                    height: qrCodePdfHeight,
-                });
+            // Add the QR code to the PDF at the specified position
+            firstPage.drawImage(qrCodeImage, {
+                x: firstPage.getWidth() * qrPosX,
+                y: firstPage.getHeight() * qrPosY,
+                width: qrCodePdfWidth,
+                height: qrCodePdfHeight,
+            });
 
-                // Serialize the PDF to bytes and
-                // Serialize the PDF to bytes and download
-                const pdfBytes = await pdfDoc.save();
-                const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-                const url = URL.createObjectURL(blob);
+            // Serialize the PDF to bytes and download
+            const pdfBytes = await pdfDoc.save();
+            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
 
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'downloaded-with-qr-code.pdf';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-            }
-        });
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'downloaded-with-qr-code.pdf';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+    });
 
         // Save QR Code to PDF preview
         document.getElementById('saveQRCode').addEventListener('click', function() {
